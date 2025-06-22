@@ -81,6 +81,7 @@ class reaction_diffusion:
         else:
             matrices = Matrices3D(vertices=self.nodes, tetrahedrons=self.elems, device=self.device, dtype=self.dtype)
 
+        raise  Exception(self.elems.shape[1] == 3, self.dm == 2, type(matrices))
         K, M = matrices.assemble_matrices(self.sigma_m)
         
         self.K = K.to(device=self.device, dtype=self.dtype)
