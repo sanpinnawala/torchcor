@@ -1,5 +1,5 @@
 matplotlib
-numpy<2
+numpy>1
 pygmsh
 pynvml
 pyvista
