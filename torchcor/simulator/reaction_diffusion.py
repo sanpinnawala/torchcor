@@ -67,7 +67,7 @@ class reaction_diffusion:
 
 
     def generate_diffusivity_tensors(self):
-        sigma_m = self.diff_f * torch.eye(self.dm, device=self.fibres.device, dtype=self.dtype).unsqueeze(0).expand(self.fibres.shape[0], 3,3)
+        sigma_m = self.diff_f * torch.eye(self.dm, device=self.fibres.device, dtype=self.dtype).unsqueeze(0).expand(self.fibres.shape[0], self.dm, self.dm)
         sigma_m += (self.diff_f - self.diff_t) * self.fibres.unsqueeze(2) @ self.fibres.unsqueeze(1)
         return sigma_m
 
