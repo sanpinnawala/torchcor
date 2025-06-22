@@ -166,8 +166,7 @@ class reaction_diffusion:
 
         ### print log info to console ###
         if verbose:
-            print(self.reaction_term.name,
-                  self.n_nodes, 
+            print(self.n_nodes,
                   round(time.time() - solving_time, 2),
                   n_total_iter,
                   f"{round(sum(gpu_utilisation_list)/len(gpu_utilisation_list), 2)}",
