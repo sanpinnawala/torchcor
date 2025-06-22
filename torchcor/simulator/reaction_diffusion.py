@@ -36,8 +36,6 @@ class reaction_diffusion:
         self.fibres = None
         self.region_ids = None
 
-        self.stimuli = None
-
         self.K = None
         self.M = None
         self.A = None
@@ -55,7 +53,7 @@ class reaction_diffusion:
         self.result_path = None
 
 
-    def load_mesh(self, path="Data/ventricle/Case_1", unit_conversion=1000):
+    def load_mesh(self, path="Data/ventricle/Case_1", unit_conversion=1):
         self.mesh_path = Path(path)
         
         reader = MeshReader(path)
@@ -64,15 +62,9 @@ class reaction_diffusion:
         self.n_nodes = nodes.shape[0]
         self.nodes = torch.from_numpy(nodes).to(dtype=self.dtype, device=self.device)
         self.elems = torch.from_numpy(elems).to(dtype=torch.int, device=self.device)
-        self.regions = torch.from_numpy(regions).to(dtype=torch.int, device=self.device)
+        # self.regions = torch.from_numpy(regions).to(dtype=torch.int, device=self.device)
         self.fibres = torch.from_numpy(fibres).to(dtype=self.dtype, device=self.device)
 
-        self.stimuli = Stimuli(self.n_nodes, self.device, self.dtype)
-
-    def add_stimulus(self, vtx_filepath, start, duration, intensity, period=None, count=1):
-        if period is None:
-            period = self.T
-        self.stimuli.add(vtx_filepath, start, duration, intensity, period, count)
 
     def generate_diffusivity_tensors(self):
         sigma_m = self.diff_f * torch.eye(self.dm, device=self.fibres.device, dtype=self.dtype).unsqueeze(0).expand(self.fibres.shape[0], 3,3)
