@@ -52,6 +52,7 @@ class reaction_diffusion:
         self.mesh_path = None
         self.result_path = None
 
+        self.u0 = None
 
     def load_mesh(self, path="Data/ventricle/Case_1", unit_conversion=1):
         self.mesh_path = Path(path)
@@ -65,6 +66,9 @@ class reaction_diffusion:
         # self.regions = torch.from_numpy(regions).to(dtype=torch.int, device=self.device)
         self.fibres = torch.from_numpy(fibres).to(dtype=self.dtype, device=self.device)
 
+    def load_initial(self, path):
+        u0 = np.loadtxt(path, dtype=np.float64, skiprows=1)
+        self.u0 = torch.from_numpy(u0).to(dtype=torch.float64, device='cuda:0')
 
     def generate_diffusivity_tensors(self):
         sigma_m = self.diff_f * torch.eye(self.dm, device=self.fibres.device, dtype=self.dtype).unsqueeze(0).expand(self.fibres.shape[0], self.dm, self.dm)
@@ -126,7 +130,7 @@ class reaction_diffusion:
 
         self.assemble()
         
-        u = self.reaction_term.initialize(self.n_nodes)
+        u = self.u0.clone()
         u_initial = u.clone()
         self.cg.initialize(x=u, linear_guess=linear_guess)
         ts_per_frame = int(snapshot_interval / self.dt)
